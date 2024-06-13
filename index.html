@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Notificaciones</h2>
+    <ul id="notificaciones"></ul>
+
+    <script>
+        const listaNotificaciones = document.getElementById("notificaciones");
+        let idLastNoti = 0;
+
+        function mostrarNotificaciones(notificaciones) {
+            for (let notificacion of notificaciones) {
+                mostrarNotificacion(notificacion)
+            }
+        }
+
+        function mostrarNotificacion(notificacion){
+            const li = document.createElement("li");
+            li.innerText = notificacion.cuerpo;
+
+            listaNotificaciones.appendChild(li);
+        }
+
+        async function obtenerNotificaciones() {
+            const resp = await fetch("http://localhost:3000/notificaciones");
+            const json = await resp.json();
+            const notificaciones = json.notificaciones;
+
+            if (notificaciones.length > 0) {
+                
+                mostrarNotificaciones(notificaciones);
+            }
+
+        }
+
+        async  function obtenerNuevaNotificacion() {
+            const resp = await fetch("http://localhost:3000/notificaciones-nuevas");
+            const json = await resp.json();
+            const notificacion = json.notificacion;
+
+            mostrarNotificacion(notificacion);
+            obtenerNuevaNotificacion();
+
+        }
+
+        (async () => {
+            await obtenerNotificaciones();
+            await obtenerNuevaNotificacion();
+        })();
+    </script>
+</body>
+</html>
